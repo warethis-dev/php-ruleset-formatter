@@ -1,0 +1,78 @@
+{
+  "name": "php-ruleset-formatter",
+  "displayName": "PHP Ruleset Formatter",
+  "description": "Formats PHP using a lightweight ruleset interpreted from an XML file.",
+  "version": "0.0.2",
+  "publisher": "WarethisDevelopment",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/warethis-dev/php-ruleset-formatter.git"
+  },
+  "homepage": "https://github.com/warethis-dev/php-ruleset-formatter#readme",
+  "bugs": {
+    "url": "https://github.com/warethis-dev/php-ruleset-formatter/issues"
+  },
+  "keywords": ["php", "formatter", "vscode", "ruleset", "xml"],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:php"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "phpRulesetFormatter.format",
+        "title": "Format PHP (Ruleset)",
+        "category": "PHP Ruleset Formatter"
+      },
+      {
+        "command": "phpRulesetFormatter.openRuleset",
+        "title": "Open Ruleset File",
+        "category": "PHP Ruleset Formatter"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "phpRulesetFormatter.format",
+          "when": "editorLangId == php",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PHP Ruleset Formatter",
+      "properties": {
+        "phpRulesetFormatter.rulesetPath": {
+          "type": "string",
+          "default": ".vscode/php-ruleset-formatter.xml",
+          "description": "Path to the XML ruleset file (absolute or workspace-relative)."
+        },
+        "phpRulesetFormatter.overrideRules": {
+          "type": "object",
+          "default": {},
+          "description": "Optional rule overrides. Supported keys: tabWidth, indentWithTabs, braceOnSameLine, elseOnNewLine, functionSpacing, compactHeaderNoBlankLines, preserveTrailingWhitespace, preserveWindowsEol."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "smoke": "npm run compile && node scripts/smoke-test.js",
+    "package:vsix": "npm run compile && npx @vscode/vsce package"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.6.0",
+    "@types/node": "^20.14.15",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.6.2"
+  }
+}

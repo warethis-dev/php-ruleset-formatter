@@ -1,0 +1,8 @@
+**/.vscode/**
+**/.qodo/**
+**/node_modules/**
+**/sample/**
+**/scripts/**
+**/src/**
+**/tsconfig.json
+**/.gitignore
