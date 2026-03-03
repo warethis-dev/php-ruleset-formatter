@@ -1,8 +1,9 @@
 {
   "name": "php-ruleset-formatter",
   "displayName": "PHP Ruleset Formatter",
+  "icon": "phpformat.png",
   "description": "Formats PHP using a lightweight ruleset interpreted from an XML file.",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "publisher": "WarethisDevelopment",
   "license": "MIT",
   "repository": {
