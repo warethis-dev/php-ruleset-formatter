@@ -3,7 +3,7 @@
   "displayName": "PHP Ruleset Formatter",
   "icon": "phpformat.png",
   "description": "Formats PHP using a lightweight ruleset interpreted from an XML file.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "WarethisDevelopment",
   "license": "MIT",
   "repository": {
@@ -14,7 +14,13 @@
   "bugs": {
     "url": "https://github.com/warethis-dev/php-ruleset-formatter/issues"
   },
-  "keywords": ["php", "formatter", "vscode", "ruleset", "xml"],
+  "keywords": [
+    "php",
+    "formatter",
+    "vscode",
+    "ruleset",
+    "xml"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
