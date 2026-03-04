@@ -32,8 +32,6 @@ Run **PHP Ruleset Formatter: Open Ruleset File** from the Command Palette.
 - `Custom.Header.NoBlankLines` -> removes blank lines between `<?php`, `namespace`, `use`, and `declare(...)` header lines.
 - Exclusions for trailing whitespace and Windows EOL behavior.
 
-This extension does not run PHPCS. It applies simple formatting transformations based on interpreted rules.
-
 ## Documentation
 - [Github Pages](https://warethis-dev.github.io/php-ruleset-formatter/)
 ---
