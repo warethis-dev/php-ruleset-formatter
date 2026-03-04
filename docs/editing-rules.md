@@ -1,4 +1,3 @@
-````markdown
 # Editing Rules
 
 This guide explains the example: how to edit the rule in PHPFormatExtension that prevents cuddling of `else` conditions (i.e., enforces that `else` must start on a new line after a closing brace).
@@ -84,4 +83,3 @@ To change how this rule works (for example, to allow cuddled `else` conditions):
 - Or, control the rule for yourself by editing your ruleset XML file as described above.
 - Recompile only if you change the extension code; for ruleset changes, just save and use the formatter.
 
-````

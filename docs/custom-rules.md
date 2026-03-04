@@ -1,8 +1,6 @@
-````markdown
 # Adding Custom Rules to PHPFormatExtension
 
 This guide explains how to add your own custom formatting rules to the PHPFormatExtension project, and how to contribute them back to the project if you wish.
-
 ---
 
 ## 1. Adding Custom Rules (For Personal Use)
@@ -145,6 +143,6 @@ Make sure to reload or re-run the formatter after updating your ruleset XML.
 
 ---
 
+
 This example demonstrates how to add a brand new custom rule, register it, and (optionally) enable it via your ruleset XML file.
 
-````
