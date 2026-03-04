@@ -24,16 +24,16 @@ Run **PHP Ruleset Formatter: Open Ruleset File** from the Command Palette.
 
 ## Supported rules (current)
 
-- `tab-width` argument.
-- `Generic.WhiteSpace.DisallowSpaceIndent` -> tab indentation.
-- `Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine` -> opening brace on same line.
-- `Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace` excluded -> no else cuddling.
-- `Squiz.WhiteSpace.FunctionSpacing` property `spacing`.
-- `Custom.Header.NoBlankLines` -> removes blank lines between `<?php`, `namespace`, `use`, and `declare(...)` header lines.
-- Exclusions for trailing whitespace and Windows EOL behavior.
 
 This extension does not run PHPCS. It applies simple formatting transformations based on interpreted rules.
 
+## Documentation
+
+User-facing documentation is available in the `docs/` folder. These files are intended to be published via GitHub Pages (set Pages source to the `main` branch and `/docs` folder) if you want a browsable site.
+
+- [Docs home](docs/index.md)
+- [Editing Rules](docs/editing-rules.md)
+- [Custom Rules](docs/custom-rules.md)
 ## Package and install
 
 1. Build a VSIX:
