@@ -3,7 +3,7 @@
   "displayName": "PHP Ruleset Formatter",
   "icon": "phpformat.png",
   "description": "Formats PHP using a lightweight ruleset interpreted from an XML file.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "WarethisDevelopment",
   "license": "MIT",
   "repository": {
