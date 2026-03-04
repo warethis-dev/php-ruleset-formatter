@@ -10,9 +10,11 @@ If you want to change the cuddled `else` rule just for yourself, you can do so b
 
 1. Open your ruleset XML file.
 2. Make sure it does **not** include the following exclude:
+   
   ```xml
   <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
   ```
+
 3. If this line is present, remove or comment it out.
 4. Save your ruleset XML file.
 5. Use the formatter as usual. The extension will now allow cuddled `else` conditions for you, without any need to recompile or change the extension code.
