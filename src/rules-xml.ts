@@ -1,5 +1,9 @@
 import { FormatterRules, defaultRules } from './types';
 
+function stripXmlComments(xml: string): string {
+  return xml.replace(/<!--[\s\S]*?-->/g, '');
+}
+
 function hasRuleRef(xml: string, ref: string): boolean {
   const pattern = new RegExp(`<rule\\s+ref=["']${escapeRegExp(ref)}["'][^>]*>`, 'i');
   return pattern.test(xml);
@@ -38,41 +42,36 @@ function escapeRegExp(value: string): string {
 }
 
 export function parseRulesetXml(xml: string): FormatterRules {
+  const effectiveXml = stripXmlComments(xml);
   const parsed: FormatterRules = { ...defaultRules };
 
-  const tabWidth = parseTabWidth(xml);
+  const tabWidth = parseTabWidth(effectiveXml);
   if (typeof tabWidth === 'number' && Number.isFinite(tabWidth) && tabWidth > 0) {
     parsed.tabWidth = tabWidth;
   }
 
-  if (hasRuleRef(xml, 'Generic.WhiteSpace.DisallowSpaceIndent')) {
-    parsed.indentWithTabs = true;
-  }
+  parsed.indentWithTabs = hasRuleRef(effectiveXml, 'Generic.WhiteSpace.DisallowSpaceIndent');
+  parsed.braceOnSameLine = hasRuleRef(effectiveXml, 'Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine');
+  parsed.elseOnNewLine = hasExcludeName(effectiveXml, 'Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace');
 
-  if (hasRuleRef(xml, 'Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine')) {
-    parsed.braceOnSameLine = true;
-  }
-
-  if (hasExcludeName(xml, 'Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace')) {
-    parsed.elseOnNewLine = true;
-  }
-
-  const spacing = parseFunctionSpacing(xml);
+  const spacing = parseFunctionSpacing(effectiveXml);
   if (typeof spacing === 'number' && Number.isFinite(spacing) && spacing >= 0) {
     parsed.functionSpacing = spacing;
   }
 
-  if (hasRuleRef(xml, 'Custom.Header.NoBlankLines')) {
-    parsed.compactHeaderNoBlankLines = true;
-  }
-
-  if (hasExcludeName(xml, 'Squiz.WhiteSpace.SuperfluousWhitespace.EndLine')) {
-    parsed.preserveTrailingWhitespace = true;
-  }
-
-  if (hasExcludeName(xml, 'Generic.Files.LineEndings.InvalidEOLChar')) {
-    parsed.preserveWindowsEol = true;
-  }
+  parsed.compactHeaderNoBlankLines = hasRuleRef(effectiveXml, 'Custom.Header.NoBlankLines');
+  parsed.normalizeUnsupportedShortOpenTags = hasRuleRef(effectiveXml, 'Custom.PHP.DisallowShortOpenTag');
+  parsed.normalizeSimpleAssignments = hasRuleRef(effectiveXml, 'Custom.WhiteSpace.NormalizeSimpleAssignments');
+  parsed.trimTrailingWhitespace = hasRuleRef(effectiveXml, 'Custom.WhiteSpace.TrimTrailingWhitespace');
+  parsed.normalizeLineEndingsToLf = hasRuleRef(effectiveXml, 'Custom.LineEndings.UseLf');
+  parsed.ensureFinalNewline = hasRuleRef(effectiveXml, 'Custom.Files.EnsureFinalNewline');
+  parsed.normalizeSingleBlankLineMax = hasRuleRef(effectiveXml, 'Custom.WhiteSpace.SingleBlankLineMax');
+  parsed.normalizeKeywordSpacing = hasRuleRef(effectiveXml, 'Custom.ControlStructures.KeywordSpacing');
+  parsed.normalizeOperatorSpacing = hasRuleRef(effectiveXml, 'Custom.WhiteSpace.OperatorSpacing');
+  parsed.normalizeCommaSpacing = hasRuleRef(effectiveXml, 'Custom.WhiteSpace.CommaSpacing');
+  parsed.removeClosingTagInPhpOnlyFiles = hasRuleRef(effectiveXml, 'Custom.PHP.RemoveClosingTagInPhpOnlyFiles');
+  parsed.preserveTrailingWhitespace = hasExcludeName(effectiveXml, 'Squiz.WhiteSpace.SuperfluousWhitespace.EndLine');
+  parsed.preserveWindowsEol = hasExcludeName(effectiveXml, 'Generic.Files.LineEndings.InvalidEOLChar');
 
   return parsed;
 }

@@ -1,5 +1,87 @@
 import { FormatterRules } from './types';
 
+function normalizeUnsupportedShortOpenTags(input: string): string {
+  // Keep <?=, <?php, and <?xml intact; normalize other short-open tags to <?php.
+  return input.replace(/<\?(?!php\b|=|xml\b)/gi, '<?php');
+}
+
+function normalizeSimpleAssignments(input: string): string {
+  const assignmentPattern = /(\$[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*)[ \t\r\n]*=[ \t\r\n]*([^;\r\n]+)[ \t\r\n]*;/g;
+
+  return input.replace(assignmentPattern, (match, variable: string, rhs: string) => {
+    if (!/[\r\n]/.test(match)) {
+      return match;
+    }
+
+    const normalizedRhs = rhs.trim().replace(/[ \t]{2,}/g, ' ');
+    return `${variable} = ${normalizedRhs};`;
+  });
+}
+
+function removeClosingTagInPhpOnlyFiles(input: string): string {
+  const trimmed = input.trimEnd();
+  if (!trimmed.endsWith('?>')) {
+    return input;
+  }
+
+  if (!/^\s*<\?php\b/i.test(trimmed)) {
+    return input;
+  }
+
+  const withoutFinalClosingTag = trimmed.replace(/\?>\s*$/g, '').trimEnd();
+  const afterOpeningTag = withoutFinalClosingTag.replace(/^\s*<\?php\b/i, '');
+
+  if (/<\?(?:php|=)?/i.test(afterOpeningTag) || /\?>/.test(afterOpeningTag)) {
+    return input;
+  }
+
+  return withoutFinalClosingTag;
+}
+
+function transformLineBody(line: string, transform: (body: string) => string): string {
+  const indent = (line.match(/^[\t ]*/) ?? [''])[0];
+  const body = line.slice(indent.length);
+  return `${indent}${transform(body)}`;
+}
+
+function normalizeKeywordSpacing(lines: string[]): string[] {
+  return lines.map((line) => transformLineBody(line, (body) => body.replace(/\b(if|elseif|for|foreach|while|switch|catch)\s*\(/g, '$1 (')));
+}
+
+function normalizeOperatorSpacing(lines: string[]): string[] {
+  return lines.map((line) => transformLineBody(line, (body) => {
+    let next = body;
+    next = next.replace(/\s*(===|!==|==|!=|<=|>=|<=>|\|\||&&|=>)\s*/g, ' $1 ');
+    next = next.replace(/(?<![=!<>?])\s*=\s*(?![=>])/g, ' = ');
+    return next.replace(/ {2,}/g, ' ');
+  }));
+}
+
+function normalizeCommaSpacing(lines: string[]): string[] {
+  return lines.map((line) => transformLineBody(line, (body) => body.replace(/\s*,\s*/g, ', ')));
+}
+
+function normalizeSingleBlankLineMax(lines: string[]): string[] {
+  const output: string[] = [];
+  let blankCount = 0;
+
+  for (const line of lines) {
+    if (line.trim() === '') {
+      blankCount += 1;
+      if (blankCount > 1) {
+        continue;
+      }
+      output.push('');
+      continue;
+    }
+
+    blankCount = 0;
+    output.push(line);
+  }
+
+  return output;
+}
+
 function countLeadingSpaces(line: string): number {
   let count = 0;
   for (const char of line) {
@@ -181,8 +263,20 @@ function normalizeHeaderSpacing(lines: string[]): string[] {
 }
 
 export function formatPhp(input: string, rules: FormatterRules): string {
-  const eol = rules.preserveWindowsEol && input.includes('\r\n') ? '\r\n' : '\n';
-  const normalized = input.replace(/\r\n?/g, '\n');
+  const eol = rules.normalizeLineEndingsToLf ? '\n' : (rules.preserveWindowsEol && input.includes('\r\n') ? '\r\n' : '\n');
+  let normalized = input.replace(/\r\n?/g, '\n');
+
+  if (rules.normalizeUnsupportedShortOpenTags) {
+    normalized = normalizeUnsupportedShortOpenTags(normalized);
+  }
+
+  if (rules.normalizeSimpleAssignments) {
+    normalized = normalizeSimpleAssignments(normalized);
+  }
+
+  if (rules.removeClosingTagInPhpOnlyFiles) {
+    normalized = removeClosingTagInPhpOnlyFiles(normalized);
+  }
 
   let lines = normalized.split('\n');
 
@@ -202,11 +296,32 @@ export function formatPhp(input: string, rules: FormatterRules): string {
     lines = normalizeHeaderSpacing(lines);
   }
 
+  if (rules.normalizeKeywordSpacing) {
+    lines = normalizeKeywordSpacing(lines);
+  }
+
+  if (rules.normalizeOperatorSpacing) {
+    lines = normalizeOperatorSpacing(lines);
+  }
+
+  if (rules.normalizeCommaSpacing) {
+    lines = normalizeCommaSpacing(lines);
+  }
+
+  if (rules.normalizeSingleBlankLineMax) {
+    lines = normalizeSingleBlankLineMax(lines);
+  }
+
   lines = normalizeFunctionSpacing(lines, rules.functionSpacing);
 
-  if (!rules.preserveTrailingWhitespace) {
+  if (rules.trimTrailingWhitespace || !rules.preserveTrailingWhitespace) {
     lines = lines.map((line) => line.replace(/[ \t]+$/g, ''));
   }
 
-  return lines.join(eol);
+  let output = lines.join(eol);
+  if (rules.ensureFinalNewline) {
+    output = output.replace(/(?:\r\n|\n)+$/g, '') + eol;
+  }
+
+  return output;
 }

@@ -1,46 +1,12 @@
 export const defaultRulesetTemplate = `<?xml version="1.0"?>
 <ruleset name="PHPRulesetFormatter">
-  <description>Custom PHPCS-style rules for PHP Ruleset Formatter.</description>
+  <description>Custom PHP Ruleset Formatter.</description>
 
   <arg name="tab-width" value="4"/>
 
-  <file>ajax</file>
-  <file>classes</file>
-  <file>modules</file>
-  <file>scripts</file>
-
-  <exclude-pattern>**/vendor/*</exclude-pattern>
-  <exclude-pattern>**/node_modules/*</exclude-pattern>
-  <exclude-pattern>**/classes/PHPMailer/*</exclude-pattern>
-  <exclude-pattern>**/modules/**/vendor/*</exclude-pattern>
-  <exclude-pattern>**/*.min.js</exclude-pattern>
-  <exclude-pattern>**/*.min.css</exclude-pattern>
-
-  <rule ref="PSR12">
-    <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
-    <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
-    <exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
-    <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
-    <exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
-    <exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
-    <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
-    <exclude name="PSR12.Classes.AnonClassDeclaration.CloseBraceAfterBody"/>
-    <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
-    <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
-    <exclude name="PSR12.Files.FileHeader.SpacingAfterDocblockBlock"/>
-    <exclude name="PSR12.Files.FileHeader.SpacingAfterTagBlock"/>
-    <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
-    <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine"/>
-    <exclude name="Generic.Files.LineLength.TooLong"/>
-    <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
-    <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
-    <exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
-    <exclude name="PSR2.ControlStructures.ControlStructureSpacing"/>
-    <exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
-    <exclude name="PSR12.Files.FileHeader"/>
-    <exclude name="Generic.WhiteSpace.DisallowTabIndent.TabsUsed"/>
-    <exclude name="Generic.WhiteSpace.DisallowTabIndent.NonIndentTabsUsed"/>
-  </rule>
+  <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+  <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
+  <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine"/>
 
   <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine">
   </rule>
@@ -48,6 +14,26 @@ export const defaultRulesetTemplate = `<?xml version="1.0"?>
   <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
 
   <rule ref="Custom.Header.NoBlankLines"/>
+
+  <rule ref="Custom.PHP.DisallowShortOpenTag"/>
+
+  <rule ref="Custom.WhiteSpace.NormalizeSimpleAssignments"/>
+
+  <rule ref="Custom.WhiteSpace.TrimTrailingWhitespace"/>
+
+  <rule ref="Custom.LineEndings.UseLf"/>
+
+  <rule ref="Custom.Files.EnsureFinalNewline"/>
+
+  <rule ref="Custom.WhiteSpace.SingleBlankLineMax"/>
+
+  <rule ref="Custom.ControlStructures.KeywordSpacing"/>
+
+  <rule ref="Custom.WhiteSpace.OperatorSpacing"/>
+
+  <rule ref="Custom.WhiteSpace.CommaSpacing"/>
+
+  <rule ref="Custom.PHP.RemoveClosingTagInPhpOnlyFiles"/>
 
   <rule ref="Squiz.WhiteSpace.FunctionSpacing">
     <properties>

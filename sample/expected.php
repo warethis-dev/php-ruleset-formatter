@@ -3,7 +3,7 @@
 class Demo {
 
 	public function first($x) {
-		if($x > 0) {
+		if ($x > 0) {
 			return true;
 		}
 		else {

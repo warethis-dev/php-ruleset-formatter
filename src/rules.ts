@@ -30,6 +30,36 @@ function parseOverrideRules(overrideRaw: unknown): Partial<FormatterRules> {
   if (typeof override.compactHeaderNoBlankLines === 'boolean') {
     result.compactHeaderNoBlankLines = override.compactHeaderNoBlankLines;
   }
+  if (typeof override.normalizeUnsupportedShortOpenTags === 'boolean') {
+    result.normalizeUnsupportedShortOpenTags = override.normalizeUnsupportedShortOpenTags;
+  }
+  if (typeof override.normalizeSimpleAssignments === 'boolean') {
+    result.normalizeSimpleAssignments = override.normalizeSimpleAssignments;
+  }
+  if (typeof override.trimTrailingWhitespace === 'boolean') {
+    result.trimTrailingWhitespace = override.trimTrailingWhitespace;
+  }
+  if (typeof override.normalizeLineEndingsToLf === 'boolean') {
+    result.normalizeLineEndingsToLf = override.normalizeLineEndingsToLf;
+  }
+  if (typeof override.ensureFinalNewline === 'boolean') {
+    result.ensureFinalNewline = override.ensureFinalNewline;
+  }
+  if (typeof override.normalizeSingleBlankLineMax === 'boolean') {
+    result.normalizeSingleBlankLineMax = override.normalizeSingleBlankLineMax;
+  }
+  if (typeof override.normalizeKeywordSpacing === 'boolean') {
+    result.normalizeKeywordSpacing = override.normalizeKeywordSpacing;
+  }
+  if (typeof override.normalizeOperatorSpacing === 'boolean') {
+    result.normalizeOperatorSpacing = override.normalizeOperatorSpacing;
+  }
+  if (typeof override.normalizeCommaSpacing === 'boolean') {
+    result.normalizeCommaSpacing = override.normalizeCommaSpacing;
+  }
+  if (typeof override.removeClosingTagInPhpOnlyFiles === 'boolean') {
+    result.removeClosingTagInPhpOnlyFiles = override.removeClosingTagInPhpOnlyFiles;
+  }
   if (typeof override.preserveTrailingWhitespace === 'boolean') {
     result.preserveTrailingWhitespace = override.preserveTrailingWhitespace;
   }

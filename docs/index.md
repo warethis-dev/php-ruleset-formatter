@@ -1,6 +1,6 @@
 # PHP Ruleset Formatter — Documentation
 
-This repository contains a small VS Code extension that formats PHP files using a lightweight interpretation of a PHPCS-style XML ruleset. See Below for how to edit rules and add custom rules.
+This repository contains a small VS Code extension that formats PHP files using a lightweight XML rules interpreter. It supports a focused subset of rule references and excludes. See below for how to edit rules and add custom rules.
 
 ## Contents
 
