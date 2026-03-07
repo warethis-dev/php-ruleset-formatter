@@ -115,12 +115,15 @@ function normalizeBraceToSameLine(lines: string[]): string[] {
     if (typeof next === 'string' && next.trim() === '{' && current.trim() !== '') {
       const currentTrimmedRight = current.replace(/[ \t]+$/g, '');
 
-      // Don't merge the opening brace onto a line that ends with a single-line comment
-      // (e.g. "//" or "#") because the brace would become part of the comment
-      // and break PHP syntax. If a single-line comment exists on the line, skip
-      // merging and leave the brace on its own line.
-      if (/[\/#]{2,}|(^|\s)#/.test(currentTrimmedRight) || /\/\//.test(currentTrimmedRight)) {
-        output.push(current);
+      // Check if line ends with a single-line comment
+      const commentMatch = currentTrimmedRight.match(/(.*?)(\s*(\/\/|#).*)$/);
+      if (commentMatch) {
+        // Extract code before comment and the comment itself
+        const codeBeforeComment = commentMatch[1];
+        const comment = commentMatch[2];
+        // Insert brace between code and comment
+        output.push(`${codeBeforeComment} {${comment}`);
+        i += 1;
         continue;
       }
 
