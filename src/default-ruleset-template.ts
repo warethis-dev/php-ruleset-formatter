@@ -1,44 +1,19 @@
-export const defaultRulesetTemplate = `<?xml version="1.0"?>
-<ruleset name="PHPRulesetFormatter">
-  <description>Custom PHP Ruleset Formatter.</description>
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
-  <arg name="tab-width" value="4"/>
+export async function getDefaultRulesetTemplate(extensionPath: string): Promise<string> {
+  const candidatePaths = [
+    path.join(extensionPath, 'src', 'default-ruleset-template.xml'),
+    path.join(extensionPath, 'out', 'default-ruleset-template.xml')
+  ];
 
-  <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
-  <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
-  <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine"/>
+  for (const configPath of candidatePaths) {
+    try {
+      return await fs.readFile(configPath, 'utf8');
+    } catch {
+      // continue
+    }
+  }
 
-  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine">
-  </rule>
-
-  <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
-
-  <rule ref="Custom.Header.NoBlankLines"/>
-
-  <rule ref="Custom.PHP.DisallowShortOpenTag"/>
-
-  <rule ref="Custom.WhiteSpace.NormalizeSimpleAssignments"/>
-
-  <rule ref="Custom.WhiteSpace.TrimTrailingWhitespace"/>
-
-  <rule ref="Custom.LineEndings.UseLf"/>
-
-  <rule ref="Custom.Files.EnsureFinalNewline"/>
-
-  <rule ref="Custom.WhiteSpace.SingleBlankLineMax"/>
-
-  <rule ref="Custom.ControlStructures.KeywordSpacing"/>
-
-  <rule ref="Custom.WhiteSpace.OperatorSpacing"/>
-
-  <rule ref="Custom.WhiteSpace.CommaSpacing"/>
-
-  <rule ref="Custom.PHP.RemoveClosingTagInPhpOnlyFiles"/>
-
-  <rule ref="Squiz.WhiteSpace.FunctionSpacing">
-    <properties>
-      <property name="spacing" value="1"/>
-    </properties>
-  </rule>
-</ruleset>
-`;
+  throw new Error('Could not load default ruleset template from disk.');
+}

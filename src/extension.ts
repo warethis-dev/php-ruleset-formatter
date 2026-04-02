@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { formatPhp } from './formatter';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { defaultRulesetTemplate } from './default-ruleset-template';
+import { getDefaultRulesetTemplate } from './default-ruleset-template';
 import { loadRulesForDocument, resolveRulesetPath } from './rules';
 
 async function buildDocumentEdit(document: vscode.TextDocument): Promise<vscode.TextEdit[]> {
@@ -19,6 +19,62 @@ async function buildRangeEdit(document: vscode.TextDocument, range: vscode.Range
   return [vscode.TextEdit.replace(range, formatted)];
 }
 
+const NEW_BUILTIN_RULES = [
+  'Custom.Header.NoBlankLines',
+  'Custom.PHP.DisallowShortOpenTag',
+  'Custom.WhiteSpace.NormalizeSimpleAssignments',
+  'Custom.WhiteSpace.TrimTrailingWhitespace',
+  'Custom.LineEndings.UseLf',
+  'Custom.Files.EnsureFinalNewline',
+  'Custom.WhiteSpace.SingleBlankLineMax',
+  'Custom.ControlStructures.KeywordSpacing',
+  'Custom.WhiteSpace.OperatorSpacing',
+  'Custom.WhiteSpace.CommaSpacing',
+  'Custom.PHP.RemoveClosingTagInPhpOnlyFiles'
+];
+
+function isGeneratedLegacyRuleset(xml: string): boolean {
+  return xml.includes('<description>Custom PHP Ruleset Formatter.</description>')
+    && xml.includes('Custom.Header.NoBlankLines')
+    && !xml.includes('<rule ref="PSR12">');
+}
+
+function shouldUpgradeRuleset(xml: string): boolean {
+  if (!isGeneratedLegacyRuleset(xml)) {
+    return false;
+  }
+
+  return NEW_BUILTIN_RULES.some(rule => !xml.includes(rule));
+}
+
+async function ensureRulesetTemplateVersion(resolvedPath: string, extensionPath: string): Promise<void> {
+  try {
+    const content = await fs.readFile(resolvedPath, 'utf8');
+    if (shouldUpgradeRuleset(content)) {
+      const template = await getDefaultRulesetTemplate(extensionPath);
+      await fs.writeFile(resolvedPath, template, 'utf8');
+    }
+  } catch {
+    // won't do anything; caller handles missing file creation
+  }
+}
+
+async function tryUpgradeWorkspaceRuleset(folder: vscode.WorkspaceFolder, extensionPath: string): Promise<void> {
+  const config = vscode.workspace.getConfiguration('phpRulesetFormatter', folder.uri);
+  const rulesetPath = config.get<string>('rulesetPath', '.vscode/php-ruleset-formatter.xml');
+  const resolvedPath = resolveRulesetPath(folder.uri, rulesetPath);
+  if (!resolvedPath) {
+    return;
+  }
+
+  try {
+    await fs.access(resolvedPath);
+    await ensureRulesetTemplateVersion(resolvedPath, extensionPath);
+  } catch {
+    // No existing ruleset in workspace; nothing to upgrade.
+  }
+}
+
 export function activate(context: vscode.ExtensionContext): void {
   const documentProvider = vscode.languages.registerDocumentFormattingEditProvider('php', {
     provideDocumentFormattingEdits(document: vscode.TextDocument) {
@@ -31,6 +87,8 @@ export function activate(context: vscode.ExtensionContext): void {
       return buildRangeEdit(document, range);
     }
   });
+
+  void Promise.all((vscode.workspace.workspaceFolders ?? []).map(folder => tryUpgradeWorkspaceRuleset(folder, context.extensionPath)));
 
   const command = vscode.commands.registerTextEditorCommand('phpRulesetFormatter.format', async (editor: vscode.TextEditor) => {
     const document = editor.document;
@@ -69,11 +127,14 @@ export function activate(context: vscode.ExtensionContext): void {
       return;
     }
 
+    const defaultTemplate = await getDefaultRulesetTemplate(context.extensionPath);
+
     try {
       await fs.access(resolvedPath);
+      await ensureRulesetTemplateVersion(resolvedPath, context.extensionPath);
     } catch {
       await fs.mkdir(path.dirname(resolvedPath), { recursive: true });
-      await fs.writeFile(resolvedPath, defaultRulesetTemplate, 'utf8');
+      await fs.writeFile(resolvedPath, defaultTemplate, 'utf8');
     }
 
     const document = await vscode.workspace.openTextDocument(vscode.Uri.file(resolvedPath));
