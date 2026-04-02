@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
 
+## [0.3.0] - 2026-03-05
+
+### Changed
+- Default ruleset is now loaded from `default-ruleset-template.xml` (and packaged out fallback).
+- `phpRulesetFormatter.openRuleset` now upgrades legacy auto-generated workspace rulesets safely.
+
+### Fixed
+- Fixed mismatch where new version could create an outdated old template; now fully updated template used.
+
+### Added
+- Upgrade path on activate across workspace folders.
+- Smoke test uses getDefaultRulesetTemplate(...) and validates new rules exist.
+
+### Testing
+- npm run smoke passes.
+
 ## [0.2.0] - 2026-03-05
 
 ### Changed
