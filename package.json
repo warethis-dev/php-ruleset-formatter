@@ -71,8 +71,9 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "tsc -p ./ && node ./scripts/copy-assets.js",
     "watch": "tsc -watch -p ./",
+    "copy-assets": "node ./scripts/copy-assets.js",
     "smoke": "npm run compile && node scripts/smoke-test.js",
     "package:vsix": "npm run compile && npx @vscode/vsce package"
   },

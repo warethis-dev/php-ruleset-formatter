@@ -3,8 +3,9 @@ import * as path from 'path';
 
 export async function getDefaultRulesetTemplate(extensionPath: string): Promise<string> {
   const candidatePaths = [
-    path.join(extensionPath, 'src', 'default-ruleset-template.xml'),
-    path.join(extensionPath, 'out', 'default-ruleset-template.xml')
+    path.join(extensionPath, 'default-ruleset-template.xml'),
+    path.join(extensionPath, 'out', 'default-ruleset-template.xml'),
+    path.join(extensionPath, 'src', 'default-ruleset-template.xml')
   ];
 
   for (const configPath of candidatePaths) {
