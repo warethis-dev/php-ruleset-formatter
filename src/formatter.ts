@@ -52,7 +52,8 @@ function normalizeOperatorSpacing(lines: string[]): string[] {
   return lines.map((line) => transformLineBody(line, (body) => {
     let next = body;
     next = next.replace(/\s*(===|!==|==|!=|<=|>=|<=>|\|\||&&|=>)\s*/g, ' $1 ');
-    next = next.replace(/(?<![=!<>?])\s*=\s*(?![=>])/g, ' = ');
+    next = next.replace(/\s*(\*\*|<<|>>|&|\||\^|\+|\-|\*|\/|\.|%)\s*=\s*/g, ' $1= ');
+    next = next.replace(/(?<![=!<>?+\-*/.%&|^])\s*=\s*(?![=>])/g, ' = ');
     return next.replace(/ {2,}/g, ' ');
   }));
 }

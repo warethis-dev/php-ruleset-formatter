@@ -48,6 +48,15 @@ const expected = fs.readFileSync(expectedPath, 'utf8');
     process.exit(1);
   }
 
+  const concatAssignInput = "<?php $a . = $b; ?>";
+  const concatAssignExpected = "<?php $a .= $b;\n";
+  const concatAssignActual = formatPhp(concatAssignInput, rules);
+
+  if (concatAssignActual !== concatAssignExpected) {
+    console.error('Smoke test failed: compound assignment operator spacing mismatch.');
+    process.exit(1);
+  }
+
   const mixedFileInput = "<div>header</div>\n<?php echo $a; ?>";
   const mixedFileExpected = "<div>header</div>\n<?php echo $a; ?>\n";
   const mixedFileActual = formatPhp(mixedFileInput, rules);
